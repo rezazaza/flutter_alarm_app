@@ -23,7 +23,8 @@ class WheelCircle extends CustomPainter {
     final paint = Paint();
     for (int i = 0; i < 60; i++) {
       double minute = 360 / 60 * i;
-      paint.color = (i % 5 == 0) ? Color(0xff65D1BA) : Colors.grey;
+      paint.color =
+          (i % 5 == 0) ? Colors.white  : Colors.grey;
       paint.strokeWidth = (i % 5 == 0) ? 4 : 1;
 
       double distance = (i % 5 == 0) ? longNeedleHeight : shortNeedleHeight;

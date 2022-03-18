@@ -27,7 +27,7 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.all(40),
+          padding: EdgeInsets.symmetric(horizontal: 40),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +52,7 @@ class _ClockState extends State<Clock> with TickerProviderStateMixin {
                   width: 15,
                   height: 15,
                   decoration: BoxDecoration(
-                      color: Color(0xff65D1BA),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(10)),
                 ),
               ),

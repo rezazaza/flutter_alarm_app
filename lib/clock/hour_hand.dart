@@ -117,8 +117,8 @@ class _HourHandState extends State<HourHand>
                           end: Alignment.topCenter,
                           colors: const [
                             Colors.transparent,
-                            Color(0xff65D1BA),
-                            Color(0xff65D1BA),
+                            Colors.white,
+                            Colors.white,
                           ]),
                       borderRadius: BorderRadius.circular(10)),
                 ),

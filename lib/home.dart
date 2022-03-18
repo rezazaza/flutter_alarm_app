@@ -39,7 +39,8 @@ class _HomeState extends State<Home> {
   void onClickNotification(String? payload) {
     showModalBottomSheet<void>(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16), topRight: Radius.circular(16)),
       ),
       context: context,
       builder: (BuildContext context) {
@@ -47,10 +48,10 @@ class _HomeState extends State<Home> {
           child: BarChart(
             data: [
               TimeOpen(
-                payload,
+                dateFormated(),
                 DateTime.now().difference(DateTime.parse(payload!)).inSeconds,
                 charts.ColorUtil.fromDartColor(
-                  Color(0xff65D1BA),
+                  Colors.blueAccent,
                 ),
               )
             ],
@@ -61,7 +62,7 @@ class _HomeState extends State<Home> {
   }
 
   void showSnackBar() {
-    String formattedDate = DateFormat('yyyy-MM-dd  hh:mm a').format(
+    String formattedDate = DateFormat('yyyy-MM-dd  hh:mm').format(
       setDateTime(),
     );
     ScaffoldMessenger.of(context).showSnackBar(
@@ -69,6 +70,13 @@ class _HomeState extends State<Home> {
         content: Text('Alarm active for $formattedDate'),
       ),
     );
+  }
+
+  String? dateFormated() {
+    String formattedDate = DateFormat('yyyy-MM-dd  hh:mm').format(
+      setDateTime(),
+    );
+    return formattedDate;
   }
 
   DateTime setDateTime() {
@@ -90,142 +98,141 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Alarm App',
-          style: TextStyle(
-            color: Color(0xff65D1BA),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: false,
-        actions: [
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              isActived ? 'Active' : 'Off',
-              style: TextStyle(
-                color: isActived ? Color(0xff65D1BA) : Colors.red,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Switch(
-              value: isActived,
-              activeColor: Color(0xff65D1BA),
-              onChanged: (value) {
-                setState(() {
-                  isActived = value;
-                  if (isActived) {
-                    NotificationApi.showNotificationSchedule(
-                        title: 'Alarm',
-                        body: 'Your alarm is active',
-                        payload: setDateTime().toString(),
-                        scheduleDate: setDateTime());
-                    Future.delayed(
-                        Duration(
-                            seconds: setDateTime()
-                                .difference(DateTime.now())
-                                .inSeconds), () {
-                      isActived = false;
-                    });
-                    showSnackBar();
-                  } else {
-                    NotificationApi.cancel();
-                  }
-                });
-              })
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 80),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.black,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Column(
               children: [
-                BlocBuilder<HourBloc, HourState>(
-                  builder: (context, state) {
-                    Future.delayed(Duration.zero, () {
-                      if (state is LoadedHour) {
-                        setState(() {
-                          hour = state.hour;
-                        });
-                      }
-                    });
-                    return Text(state is LoadedHour ? state.hour : '00',
-                        style: TextStyle(
-                            fontSize: 54, fontWeight: FontWeight.bold));
-                  },
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(':',
-                    style:
-                        TextStyle(fontSize: 54, fontWeight: FontWeight.bold)),
-                SizedBox(
-                  width: 5,
-                ),
-                BlocBuilder<MinuteBloc, MinuteState>(
-                  builder: (context, state) {
-                    Future.delayed(Duration.zero, () {
-                      if (state is LoadedMinute) {
-                        setState(() {
-                          minute = state.minute;
-                        });
-                      }
-                    });
-                    return Text(state is LoadedMinute ? state.minute : '00',
-                        style: TextStyle(
-                            fontSize: 54, fontWeight: FontWeight.bold));
-                  },
-                ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: ToggleButtons(
-                    selectedColor: Color(0xff65D1BA),
-                    children: const [
-                      Text(
-                        'AM',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BlocBuilder<HourBloc, HourState>(
+                        builder: (context, state) {
+                          Future.delayed(Duration.zero, () {
+                            if (state is LoadedHour) {
+                              setState(() {
+                                hour = state.hour;
+                              });
+                            }
+                          });
+                          return Text(state is LoadedHour ? state.hour : '00',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 54,
+                                  fontWeight: FontWeight.bold));
+                        },
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(':',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 54,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      BlocBuilder<MinuteBloc, MinuteState>(
+                        builder: (context, state) {
+                          Future.delayed(Duration.zero, () {
+                            if (state is LoadedMinute) {
+                              setState(() {
+                                minute = state.minute;
+                              });
+                            }
+                          });
+                          return Text(
+                              state is LoadedMinute ? state.minute : '00',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 54,
+                                  fontWeight: FontWeight.bold));
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: ToggleButtons(
+                          selectedColor: Colors.black,
+                          fillColor: Colors.white,
+                          color: Colors.white,
+                          children: const [
+                            Text(
+                              'AM',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'PM',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                          onPressed: (int index) {
+                            setState(() {
+                              for (int buttonIndex = 0;
+                                  buttonIndex < isSelected.length;
+                                  buttonIndex++) {
+                                if (buttonIndex == index) {
+                                  isAm = index == 0 ? true : false;
+                                  isActived = false;
+                                  isSelected[buttonIndex] = true;
+                                  NotificationApi.cancel();
+                                } else {
+                                  isSelected[buttonIndex] = false;
+                                }
+                              }
+                            });
+                          },
+                          isSelected: isSelected,
                         ),
                       ),
-                      Text(
-                        'PM',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
                     ],
-                    onPressed: (int index) {
-                      setState(() {
-                        for (int buttonIndex = 0;
-                            buttonIndex < isSelected.length;
-                            buttonIndex++) {
-                          if (buttonIndex == index) {
-                            isAm = index == 0 ? true : false;
-                            isActived = false;
-                            isSelected[buttonIndex] = true;
-                            NotificationApi.cancel();
-                          } else {
-                            isSelected[buttonIndex] = false;
-                          }
-                        }
-                      });
-                    },
-                    isSelected: isSelected,
                   ),
                 ),
+                TextButton(
+                    onPressed: () {
+                      NotificationApi.showNotificationSchedule(
+                          title: 'Alarm',
+                          body: 'Your alarm is active',
+                          payload: setDateTime().toString(),
+                          scheduleDate: setDateTime());
+                      Future.delayed(
+                          Duration(
+                              seconds: setDateTime()
+                                  .difference(DateTime.now())
+                                  .inSeconds), () {
+                        isActived = false;
+                      });
+                      showSnackBar();
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      margin: const EdgeInsets.symmetric(vertical: 13),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                      child: FittedBox(
+                        child: Text(
+                          "Set Alarm",
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      ),
+                    )),
               ],
             ),
-          ),
-          Clock(),
-        ],
+            Clock(),
+          ],
+        ),
       ),
     );
   }
